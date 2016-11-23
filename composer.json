@@ -1,0 +1,26 @@
+{
+	"name": "yii2-resque/api",
+	"description": "resque ext, For yii2 extention. Support multiple configuration.",
+	"keywords": ["yii2","resque", "resque api","extension"],
+	"license": "BSD-3-Clause",
+	"type": "yii2-extension",
+	"support": {
+		"issues": "https://github.com/cunwang/yii2-resque/issues?q=labels=ext%3Aimagine",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/cunwang/yii2-resque"
+	},
+	"authors": [
+		{
+			"name": "https://github.com/cunwang",
+			"email": "lodrw@sina.com"
+		}
+	],
+	"require": {
+		"yiisoft/yii2": "*" 
+	},
+	"autoload": {
+		"psr-4": {"Yii2resque\\api\\": ""}
+	}
+}
