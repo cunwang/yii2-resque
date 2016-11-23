@@ -4,10 +4,10 @@
 /**
  * file msgqueue.php
  *
- * @abstract ÅäºÏresqueÊ¹ÓÃµÄÀ©Õ¹Àà£¬ÓÃÓÚ²»Í¬·şÎñÆ÷²»Í¬ÏîÄ¿²»°²×°resqueµÄÇé¿öÏÂ£¬Ö±½Ó×·¼ÓÊı¾İ¡£
- *	- Ö§³ÖÒ»´ÎÊµÀı¶à´Î×·¼Ó£»
- *	- Ö§³Ö×Ô¶¨ÒåµÄÃüÃû¿Õ¼ä£»
- *	- Êı¾İÈë¶ÓÁĞÇ°ºóÓĞÊı¾İ»Øµ÷¿ÉÓÃ£»
+ * @abstract é…åˆresqueä½¿ç”¨çš„æ‰©å±•ç±»ï¼Œç”¨äºä¸åŒæœåŠ¡å™¨ä¸åŒé¡¹ç›®ä¸å®‰è£…resqueçš„æƒ…å†µä¸‹ï¼Œç›´æ¥è¿½åŠ æ•°æ®ã€‚
+ *	- æ”¯æŒä¸€æ¬¡å®ä¾‹å¤šæ¬¡è¿½åŠ ï¼›
+ *	- æ”¯æŒè‡ªå®šä¹‰çš„å‘½åç©ºé—´ï¼›
+ *	- æ•°æ®å…¥é˜Ÿåˆ—å‰åæœ‰æ•°æ®å›è°ƒå¯ç”¨ï¼›
  * @date 2015/04/21
  * @edited Date 2016/11/18
  * @author <http://github.com/wangcun>
@@ -19,22 +19,22 @@
 class MsgQueue
 {
 
-    private $redis;		//ÓÃÓÚ½ÓÊÕredisÊµÀı
-    private $queueList;	 //ËùÓĞ¶ÓÁĞµÄÁĞ±í
-    private $res;		//½á¹û×Ö·û´®
+    private $redis;		//ç”¨äºæ¥æ”¶rediså®ä¾‹
+    private $queueList;	 //æ‰€æœ‰é˜Ÿåˆ—çš„åˆ—è¡¨
+    private $res;		//ç»“æœå­—ç¬¦ä¸²
     private $queueName;	//queueName
     private $jobName;	//job class Name
-	private $prefix;	//Redis keyµÄ¹«¹²Ç°×º
-	private $mointer;	// ¼à¿Ø
+	private $prefix;	//Redis keyçš„å…¬å…±å‰ç¼€
+	private $mointer;	// ç›‘æ§
 	
 	
 	/**
-	 * ³õÊ¼»¯¶ÓÁĞ
-	 * @params $jobName string £¬jobÀàµÄÃû³Æ
-	 * @params $queueName string £¬¶ÓÁĞµÄÃû³Æ
-	 * @params $redis objct£¬ redis¶ÔÏó
-	 * @params $namespace	¶ÓÁĞµÄÇ°×º£¬Ä¬ÈÏÖµ²»ÓÃĞŞ¸Ä
-	 * @params $mointer ÊÇ·ñ¿ªÆô¼à¿Ø£¬Ä¬ÈÏ¿ªÆô
+	 * åˆå§‹åŒ–é˜Ÿåˆ—
+	 * @params $jobName string ï¼Œjobç±»çš„åç§°
+	 * @params $queueName string ï¼Œé˜Ÿåˆ—çš„åç§°
+	 * @params $redis objctï¼Œ rediså¯¹è±¡
+	 * @params $namespace	é˜Ÿåˆ—çš„å‰ç¼€ï¼Œé»˜è®¤å€¼ä¸ç”¨ä¿®æ”¹
+	 * @params $mointer æ˜¯å¦å¼€å¯ç›‘æ§ï¼Œé»˜è®¤å¼€å¯
 	 */
     public function __construct($jobName, $queueName, & $redis, $prefix = 'resque:', $mointer = true)
     {
@@ -52,7 +52,7 @@ class MsgQueue
 	
 	
 	/**
-	 * ¿ÉÉèÖÃRedis¶ÔÏó
+	 * å¯è®¾ç½®Rediså¯¹è±¡
 	 */
     public function setRedis($redis)
     {
@@ -61,7 +61,7 @@ class MsgQueue
 	
 	
 	/**
-	 * ¿ÉÉèÖÃ¶ÓÁĞÃû³Æ
+	 * å¯è®¾ç½®é˜Ÿåˆ—åç§°
 	 */
     public function setQueueList($queueName)
     {
@@ -73,7 +73,7 @@ class MsgQueue
 	
 	
 	/**
-	 * ¸ñÊ½»¯Èë¿âÊı¾İ£¬´«µÄ²ÎÊıÍ¬²½resque
+	 * æ ¼å¼åŒ–å…¥åº“æ•°æ®ï¼Œä¼ çš„å‚æ•°åŒæ­¥resque
 	 */
     public function initJobData($data)
     {
@@ -90,10 +90,10 @@ class MsgQueue
 
     
 	/**
-	 * ½«Êı¾İ¼ÓÈë¶ÓÁĞ
+	 * å°†æ•°æ®åŠ å…¥é˜Ÿåˆ—
 	 * @params $data
-	 * @params $callpre Hooks£¬ÓÃÓÚÔÚÊı¾İ¼ÓÈë¶ÓÁĞ¶¯×÷Ö®Ç°Ö´ĞĞ£¬¿ÉÒÔÊÇÄäÃûº¯Êı»òÊÇÖ¸¶¨ÀàÖĞ·½·¨¡£
-	 * @params $callback Hooks£¬ÓÃÓÚÔÚÊı¾İ¼ÓÈë¶ÓÁĞ¶¯×÷Ö®ºóÖ´ĞĞ£¬¿ÉÒÔÊÇÄäÃûº¯Êı»òÊÇÖ¸¶¨ÀàÖĞ·½·¨¡£
+	 * @params $callpre Hooksï¼Œç”¨äºåœ¨æ•°æ®åŠ å…¥é˜Ÿåˆ—åŠ¨ä½œä¹‹å‰æ‰§è¡Œï¼Œå¯ä»¥æ˜¯åŒ¿åå‡½æ•°æˆ–æ˜¯æŒ‡å®šç±»ä¸­æ–¹æ³•ã€‚
+	 * @params $callback Hooksï¼Œç”¨äºåœ¨æ•°æ®åŠ å…¥é˜Ÿåˆ—åŠ¨ä½œä¹‹åæ‰§è¡Œï¼Œå¯ä»¥æ˜¯åŒ¿åå‡½æ•°æˆ–æ˜¯æŒ‡å®šç±»ä¸­æ–¹æ³•ã€‚
 	 * @return string
 	 */
     public function add2Queue($data)
@@ -141,7 +141,7 @@ class MsgQueue
     
 
 	/**
-	 * ¶ÔÈë¿âµÄÊı¾İ×·¼Ó×´Ì¬¼à¿Ø
+	 * å¯¹å…¥åº“çš„æ•°æ®è¿½åŠ çŠ¶æ€ç›‘æ§
 	 * @params $id string 
 	 */
 	protected function doMointer($id)
@@ -157,7 +157,7 @@ class MsgQueue
 	}
 	
 	/**
-	 * ·µ»ØÒ»´®32Î»µÄ×Ö·û´®£¬Í¬²½resque Worker.phpÖĞµÄ·½·¨
+	 * è¿”å›ä¸€ä¸²32ä½çš„å­—ç¬¦ä¸²ï¼ŒåŒæ­¥resque Worker.phpä¸­çš„æ–¹æ³•
 	 */
 	public function generateJobId()
 	{
@@ -166,7 +166,7 @@ class MsgQueue
 	
 	
 	/**
-	 * ¹¤¾ß·½·¨
+	 * å·¥å…·æ–¹æ³•
 	 */
     static public function encoding($data, $input='gbk', $out='utf-8')
     {
