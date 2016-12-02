@@ -80,7 +80,7 @@ class MsgQueue
         if (! empty($data)) {
 			return [
 				'class'	=> $this->jobName,
-				'args'	=> [self::encoding($data)],
+				'args'	=> [$data],
 				'id'	=> time(),
 				'queue_time' => microtime(true)
 			];
@@ -163,20 +163,4 @@ class MsgQueue
 	{
 		return md5(uniqid('', true));
 	}
-	
-	
-	/**
-	 * 工具方法
-	 */
-    static public function encoding($data, $input='gbk', $out='utf-8')
-    {
-        if (is_array($data)) {
-            foreach($data as $key => $value) {
-                $data[$key] = self::encoding($value, $input, $out);
-            }
-            return $data;
-        } else {
-            return iconv("{$input}", "{$out}//IGNORE", $data);
-        }
-    }
 }
