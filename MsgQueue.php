@@ -9,7 +9,7 @@
  *	- 支持自定义的命名空间；
  *	- 数据入队列前后有数据回调可用；
  * @date 2015/04/21
- * @edited Date 2016/11/18
+ * @edited Date 2016/12/02
  * @author <http://github.com/wangcun>
  * @usage: 
  *
