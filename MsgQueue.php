@@ -10,11 +10,11 @@
  *	- 数据入队列前后有数据回调可用；
  *
  * @date 2015/04/21
- * @edited Date 2016/12/02
+ * @edited Date 2017/08/07
  * @author <http://github.com/wangcun>
  * @usage: 
  *
- * @since 2.0
+ * @since 2.1
  */
  
 class MsgQueue
@@ -100,45 +100,39 @@ class MsgQueue
     public function add2Queue($data)
     {
 		$args	= func_get_args();
-		array_shift($args);
-		
-		$callper	= array_shift($args);
-		if (! empty($callper)) {
-			try {
-				list ($class, $sArgs)	= $callper;
-				if (is_callable($class)) {
-					call_user_func_array($class, $sArgs);
-				}
-			} catch (Exception $e) {
-			}
-		}
+		$this->runCallback(array_shift($args));
 	
-		//start
 		$id		= (string) $this->generateJobId();
 		$data	= $this->initJobData($data);
 		$data['id']	= $id;
 		$data	= json_encode($data);
-		if ($data === false) {
-			return false;
-		}
+
+		if ($data === false)  return false;
 
         $this->redis->rPush($this->queueName, $data);
 		$this->doMointer($id);
-		//End
+		$this->runCallback(array_shift($args));
 
-		$callback	= array_shift($args);
-		if (! empty($callback)) {
-			try {
-				list ($class, $sArgs)	= $callback;
-				if (is_callable($class)) {
-					call_user_func_array($class, $sArgs);
-				}
-			} catch (Exception $e) {
-			}
-		}
-
+		unset($args);
         return $data;
     }
+
+	
+	/**
+	 * 执行回调函数
+	 */
+	protected function runCallback($pack)
+	{
+		if (! empty($pack) && is_array($pack)) {
+
+			try {
+				list ($class, $sArgs)    = $pack;
+				if (is_callable($class)) call_user_func_array($class, [$sArgs]);
+			} catch (Exception $e) {}
+
+			unset($class, $sArgs, $pack);
+		}
+	}
     
 
 	/**
