@@ -99,21 +99,24 @@ class MsgQueue
 	 */
     public function add2Queue($data)
     {
-		$args	= func_get_args();
-		$this->runCallback(array_shift($args));
-	
+		$handle_data    = $data;
+		if (isset($handle_data['callpre']) && is_array($handle_data['callpre'])) {
+			$this->runCallback($handle_data['callpre']);
+		}
+
 		$id		= (string) $this->generateJobId();
 		$data	= $this->initJobData($data);
 		$data['id']	= $id;
 		$data	= json_encode($data);
-
 		if ($data === false)  return false;
-
         $this->redis->rPush($this->queueName, $data);
 		$this->doMointer($id);
-		$this->runCallback(array_shift($args));
 
-		unset($args);
+		if (isset($handle_data['callback']) && is_array($handle_data['callback'])) {
+			$this->runCallback($handle_data['callback']);
+		}
+
+		unset($handle_data);
         return $data;
     }
 
