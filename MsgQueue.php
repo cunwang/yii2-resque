@@ -144,13 +144,14 @@ class MsgQueue
 	 */
 	protected function doMointer($id)
 	{
+		$expire	= 60 * 60 * 24;
 		if (! empty($id) && $this->mointer) {
 			$statusPacket = [
 				'status'	=> 1,
 				'updated' 	=> time(),
 				'started' 	=> time(),
 			];
-			$this->redis->set($this->prefix . 'job:' . $id . ':status', json_encode($statusPacket));
+			$this->redis->setex($this->prefix . 'job:' . $id . ':status', $expire, json_encode($statusPacket));
 		}
 	}
 	
